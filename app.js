@@ -15,25 +15,20 @@ app.get('/', (req, res) => {
 })
 
 app.get('/movies/:movie_id', (req, res) => {
-  const movieOne = {
-    id: 0,
-    title: '',
-    description: '',
-    release_date: '',
-    image: ''
-  }
+  const movie = movieList.results.find((item) => {
+    return item.id.toString() === req.params.movie_id
+  })
 
-  movieList.results.forEach((item) => {
-    if (item.id === Number(req.params.movie_id)) {
-      movieOne.id = item.id
-      movieOne.title = item.title
-      movieOne.description = item.description
-      movieOne.release_date = item.release_date
-      movieOne.image = item.image
-    }
-  } )
+  res.render('show', { movie: movie })
+})
 
-  res.render('show', { movie: movieOne })
+app.get('/search', (req, res) => {
+  const keyword = req.query.keyword
+  const movies = movieList.results.filter((item) => {
+    return item.title.toLowerCase().includes(keyword.toLowerCase())
+  })
+
+  res.render('index', { movies: movies, keyword: keyword })
 })
 
 app.listen(port, () => {
